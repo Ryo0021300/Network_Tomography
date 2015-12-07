@@ -72,21 +72,26 @@ public class Tomography {
 //                        Tmp_Root.get(i).NomOfBranch--;
 //                    }
 
+
+//                    for (int i=0; i<Tmp_Root.size() -1; i++)//各リンクの未選択分岐数を1減らす
+//                        for (int j=0; j<Links.size(); j++)
+//                            if (Tmp_Root.get(i).link_ID == Links.get(j).link_ID)
+//                                this.Links.get(j).NomOfBranch --;
+
 //改良
-                    for (int i=0; i<Tmp_Root.size() -1; i++){//各リンクの未選択分岐数を1減らす
-                        for (int j=0; j<Links.size(); j++){
-                            if (Tmp_Root.get(i).link_ID == Links.get(j).link_ID) this.Links.get(j).NomOfBranch --;
-                        }
-                    }
-
-
-                   //今作ったルートの分岐数を再度チェック,適正値に訂正
+                   //今作ったルートの分岐数をチェック,適正値に訂正
                     for (int i=0; i<Tmp_Root.size()-1; i++){
                         int branch_count = 0;
-                        for (int j=0; j<Not_Selected.size(); j++){
-                            if (Tmp_Root.get(i).end_node.equals(Not_Selected.get(j).start_node)) branch_count += 1;
+                        for (int j=0; j<Not_Selected.size(); j++)
+                            if (Tmp_Root.get(i).end_node.equals(Not_Selected.get(j).start_node))
+                                branch_count += 1;
+
+                        for (int k=0; k<Links.size(); k++) {
+                            if (Tmp_Root.get(i).link_ID == Links.get(k).link_ID)
+                                Links.get(k).NomOfBranch = branch_count;
+                            if (Tmp_Root.get(i).end_node.equals(Links.get(k).end_node))
+                                Links.get(k).NomOfBranch = branch_count;
                         }
-                        for (int k=0; k<Links.size(); k++) if (Tmp_Root.get(i).link_ID == Links.get(k).link_ID) Links.get(k).NomOfBranch = branch_count;
                     }
 
                     Initial_Path.add(new ArrayList<Link>(Tmp_Root));//作成したパスを初期観測パス集合に追加
@@ -146,8 +151,7 @@ public class Tomography {
         //最後の確認表示
         for (int j=0; j<Initial_Path.size(); j++) {
             ArrayList<Link> al = Initial_Path.get(j);
-            System.out.println(" j = " + j);
-            System.out.println(" al_size = " + al.size());
+            System.out.println(" パス " + (j+1));
             for (int i = 0; i < al.size(); i++) {
                 System.out.println(al.get(i).link_ID + "   " + al.get(i).link_name + " " + al.get(i).start_node + " " +
                         al.get(i).end_node + " " + al.get(i).link_state_flag + " " + al.get(i).NomOfBranch);
