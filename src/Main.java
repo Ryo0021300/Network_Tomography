@@ -6,7 +6,8 @@ import java.util.*;
 
 public class Main {
     public static ArrayList<Link> Links = new ArrayList<Link>();//リンク情報のリスト
-    //public static ArrayList<Node> Nodes = new ArrayList<Node>();//ノード情報のリスト
+    public static ArrayList<ArrayList<Link>> Initial_Path;//初期観測パス
+    public static ArrayList<Link> Failure_Link = new ArrayList<Link>();//故障リンク集合
 
     public static void main(String[] args) throws IOException{
         // TODO 自動生成されたメソッド・スタブ
@@ -35,8 +36,8 @@ public class Main {
         for (int i=0; i<Links.size(); i++){
             for (int j = 0; j < Links.size(); j++) {
                 if (Links.get(i).link_ID == j) {
-                    for (int k = 0; k < Links.size(); k++) {
-                        if (Links.get(i).end_node.equals(Links.get(k).start_node)) Links.get(i).NomOfBranch ++;
+                    for (Link Link : Links) {
+                        if (Links.get(i).end_node.equals(Link.start_node)) Links.get(i).NomOfBranch++;
                     }
                 }
             }
@@ -45,9 +46,9 @@ public class Main {
         //読み込み確認用の表示
         System.out.println();
         System.out.println("--読み込み確認--");
-        for(int i=0; i<Links.size(); i++){
-            System.out.println(Links.get(i).link_ID + "   " + Links.get(i).link_name+ " "+Links.get(i).start_node + " " +
-                    Links.get(i).end_node + " " + Links.get(i).link_state_flag + " " + Links.get(i).NomOfBranch);
+        for (Link Link : Links) {
+            System.out.println(Link.link_ID + "   " + Link.link_name + " " + Link.start_node + " " +
+                    Link.end_node + " " + Link.link_state_flag + " " + Link.NomOfBranch);
         }
         System.out.println();
 
@@ -55,34 +56,39 @@ public class Main {
         //故障リンク入力
         System.out.println("\nリンクのラベルを\",\" 区切りで入力し、故障させるリンクを選んでください");
         System.out.println("-- リンクリスト");
-        for(int i=0; i<Links.size(); i++){
-            System.out.print(Links.get(i).link_name + " ");
-            if (i == Links.size() -1) System.out.println();
-        }
+        for (Link l : Links)
+            System.out.print(l.link_name + " ");
+        System.out.println();
 
         line = new Scanner(System.in).nextLine();
         Scanner scan = new Scanner(line).useDelimiter("\\s*,\\s*");//カンマ区切りに設定
         while (true){
             try{
                 line = scan.next();
-                for (int i=0; i<Links.size(); i++){
-                    if (Links.get(i).link_name.equals(line)){
-                        Link l = Links.get(i);
+                for (Link l : Links)
+                    if (l.link_name.equals(line))
                         l.link_state_flag = false;
-                        Links.set(i,l);
-                    }
-                }
             }catch (NoSuchElementException e){//next() 次に読むのがないと投げる
                 break;
             }
         }
         //故障リンクの入力が正しいか確認用
-        for (int i=0; i<Links.size(); i++){
-            System.out.println(Links.get(i).link_name+ " "+Links.get(i).start_node + " " +Links.get(i).end_node + " " + Links.get(i).link_state_flag);
-            if (i == Links.size()-1) System.out.println();
-        }
+        for (Link l : Links)
+            System.out.println(l.link_name + " " + l.start_node + " " + l.end_node + " " + l.link_state_flag);
+        System.out.println();
 
-        new Tomography(Links);
+        new InitialPath(Links);
+        new Tomography(Initial_Path);
+
+        for (int j=0; j<Initial_Path.size(); j++) {
+            ArrayList<Link> al = Initial_Path.get(j);
+            System.out.println(" パス " + (j+1));
+            for (Link anAl : al) {
+                System.out.println(anAl.link_ID + "   " + anAl.link_name + " " + anAl.start_node + " " +
+                        anAl.end_node + " " + anAl.link_state_flag + " " + anAl.NomOfBranch);
+            }
+            System.out.println();
+        }
 
     }
 }
