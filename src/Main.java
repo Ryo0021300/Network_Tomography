@@ -7,7 +7,7 @@ import java.util.*;
 public class Main {
     public static ArrayList<Link> Links = new ArrayList<Link>();//リンク情報のリスト
     public static ArrayList<ArrayList<Link>> Initial_Path;//初期観測パス
-    public static ArrayList<Link> Failure_Link = new ArrayList<Link>();//故障リンク集合
+    public static ArrayList<Link> Failure_Link;//故障リンク集合
 
     public static void main(String[] args) throws IOException{
         // TODO 自動生成されたメソッド・スタブ
@@ -77,9 +77,11 @@ public class Main {
             System.out.println(l.link_name + " " + l.start_node + " " + l.end_node + " " + l.link_state_flag);
         System.out.println();
 
+        //イスンタンス化
         new InitialPath(Links);
         new Tomography(Initial_Path);
 
+        //確認用
         for (int j=0; j<Initial_Path.size(); j++) {
             ArrayList<Link> al = Initial_Path.get(j);
             System.out.println(" パス " + (j+1));

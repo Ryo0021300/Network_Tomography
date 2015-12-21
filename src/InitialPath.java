@@ -30,7 +30,7 @@ public class InitialPath {
                         Tmp_Root.add(Not_Selected.get(i));
                         Selected.add(Not_Selected.get(i));
                         Not_Selected.remove(i);
-                        i = Not_Selected.size();
+                        break;
                     }
                 }
 
@@ -42,15 +42,15 @@ public class InitialPath {
                             Tmp_Root.add(Not_Selected.get(i));
                             Selected.add(Not_Selected.get(i));
                             Not_Selected.remove(i);
-                            i = 0;
+                            i = -1;
                         }
                         //選択済みから探して追加
                         if ((Not_Selected.size()-1 == -1 || i == Not_Selected.size()-1) && (! Tmp_Root.get(Tmp_Root.size()-1).end_node.equals("g"))) {
                             for (int j = 0; j < Selected.size(); j++) {
                                 if (Selected.get(j).start_node.equals(Tmp_Root.get(Tmp_Root.size() - 1).end_node)) {
                                     Tmp_Root.add(Selected.get(j));
-                                    i = 0;
-                                    j = 0;
+                                    i = -1;
+                                    j = -1;
                                 }
                             }
                         }
@@ -63,7 +63,7 @@ public class InitialPath {
                         for (int i=0; i<Selected.size(); i++) {
                             if (Selected.get(i).start_node.equals(Tmp_Root.get(Tmp_Root.size()-1).end_node)){
                                 Tmp_Root.add(Selected.get(i));
-                                i = 0;
+                                i = -1;
                             }
                             if (Tmp_Root.get(Tmp_Root.size() - 1).end_node.equals("g")) i = Selected.size();
                         }
