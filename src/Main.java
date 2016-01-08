@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    public static ArrayList<Link> Links = new ArrayList<Link>();//リンク情報のリスト
+    public static ArrayList<Link> Links = new ArrayList<>();//リンク情報のリスト
     public static ArrayList<ArrayList<Link>> Initial_Path;//初期観測パス
     public static ArrayList<Link> Failure_Link;//故障リンク集合
 
@@ -16,9 +16,11 @@ public class Main {
         String path = ("./Network_Data");
         File dir = new File(path);
         File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-            System.out.println((i + 1) + ":    " + file);
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                File file = files[i];
+                System.out.println((i + 1) + ":    " + file);
+            }
         }
 
         System.out.println("読み込むネットワーク番号を入力 ");
@@ -81,16 +83,17 @@ public class Main {
         new InitialPath(Links);
         new Tomography(Initial_Path);
 
+
         //確認用
-        for (int j=0; j<Initial_Path.size(); j++) {
-            ArrayList<Link> al = Initial_Path.get(j);
-            System.out.println(" パス " + (j+1));
-            for (Link anAl : al) {
-                System.out.println(anAl.link_ID + "   " + anAl.link_name + " " + anAl.start_node + " " +
-                        anAl.end_node + " " + anAl.link_state_flag + " " + anAl.NomOfBranch);
-            }
-            System.out.println();
-        }
+//        for (int j=0; j<Initial_Path.size(); j++) {
+//            ArrayList<Link> al = Initial_Path.get(j);
+//            System.out.println(" パス " + (j+1));
+//            for (Link anAl : al) {
+//                System.out.println(anAl.link_ID + "   " + anAl.link_name + " " + anAl.start_node + " " +
+//                        anAl.end_node + " " + anAl.link_state_flag + " " + anAl.NomOfBranch);
+//            }
+//            System.out.println();
+//        }
 
     }
 }
