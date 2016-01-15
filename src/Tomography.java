@@ -5,21 +5,28 @@ import java.util.stream.Collectors;
 public class Tomography{
 
     public ArrayList<ArrayList<Link>> Route;//経路集合
-    public static List<Link> Normal_Link; //正常リンク
-    public static List<Link> Failure_Candidate;//故障リンク候補集合
-    public static List<Link> Failure_Confirmed;//故障リンク確定集合
+    public List<Link> Normal_Link; //正常リンク
+    public List<Link> Failure_Candidate;//故障リンク候補集合
+    public List<Link> Failure_Confirmed;//故障リンク確定集合
     ArrayList<Link> Tmp_Root; //2次元リストの2次元目作成用の仮のリスト
+    ArrayList<ArrayList<Link>> Failure_Path; //不通ルート
 
     Tomography(ArrayList<ArrayList<Link>> l){ //コンストラクタ
         this.Route = new ArrayList<>(l);
+        Normal_Link = new ArrayList<>();
         Failure_Candidate = new ArrayList<>();
         Failure_Confirmed = new ArrayList<>();
         Tmp_Root = new ArrayList<>();
-        Normal_Link = new ArrayList<>();
+        Failure_Path = new ArrayList<>();
+
         Scan();
-//        Update();
+        Update();
         Result();
-        Main.Failure_Link = new ArrayList<>(Failure_Confirmed);
+
+        Main.Normal_Link = new ArrayList<>(this.Normal_Link);
+        Main.Failure_Candidate = new ArrayList<>(this.Failure_Candidate);
+        Main.Failure_Confirmed = new ArrayList<>(this.Failure_Confirmed);
+        Main.Failure_Path = new ArrayList<>(this.Failure_Path);
     }
 
     void Scan(){ //疎通確認
@@ -31,8 +38,7 @@ public class Tomography{
             alreadyFlag = false;
 
             //表示
-            for (Link l : route)
-                System.out.print(l.link_name + " ");
+            route.forEach(r -> System.out.print(r.link_name + " "));
             //
 
             reachFlag= true;
@@ -42,8 +48,11 @@ public class Tomography{
                 if (! tmp.link_state_flag) //ルートの中のリンクに故障があれば
                     reachFlag = false; // フラグをfalseに
 
-            if (reachFlag) System.out.println("-- OK");
-            else System.out.println(" 不通");
+            if (reachFlag)
+                System.out.println("-- OK");
+            else{
+                System.out.println(" 不通");
+                Failure_Path.add(new ArrayList<>(route)); } //不通ルート集合に追加
 
             if (reachFlag) //疎通したら
                 for (Link tmp : Tmp_Root) {
@@ -85,27 +94,30 @@ public class Tomography{
     void Update(){  //確定集合の判定
         ArrayList<Link> tmp;
 
-        for (ArrayList<Link> rout : Route){
-            Tmp_Root = new ArrayList<>(rout);
+        for (ArrayList<Link> rout : Route){ //ルート分回す
+            Tmp_Root = new ArrayList<>(rout);//ルートを一つとってくる
             tmp = new ArrayList<>();
 
-            route : for (Link l : Tmp_Root){
+            route : for (Link l : Tmp_Root){ //ルート中のリンク分回す
                 for (Link fail : Failure_Candidate) {
-                    if (l.link_ID == fail.link_ID) {
+                    if (l.link_ID == fail.link_ID) { //故障してたらtmpにリンクを追加
                         tmp.add(new Link(fail));
-                        if (tmp.size() > 1)
+                        if (tmp.size() > 1) //1以上なら確定でないので抜ける
                             break route;
-                        else
+                        else //これ以降の検索を省く
                             break; }
                 }
             }
 
-            if (tmp.size() == 1){
-                Failure_Confirmed.add(tmp.get(0));
-                for (int i=0; i<Failure_Candidate.size(); i++)
-                    if (tmp.get(0).link_ID == Failure_Candidate.get(i).link_ID)
-                        Failure_Candidate.remove(i); }
+            if (tmp.size() == 1) //故障リンクがルート中に1個なら故障が確定するので
+                Failure_Confirmed.add(new Link(tmp.get(0))); //確定集合にリンクを追加
         }
+
+        for (Link l : Failure_Confirmed) //故障が確定したリンクを候補集合から消す
+            for (int i=0; i<Failure_Candidate.size(); i++)
+                if (l.link_ID == Failure_Candidate.get(i).link_ID) {
+                    Failure_Candidate.remove(i);
+                    i--; }
     }
 
     void Result(){ //結果表示
@@ -113,7 +125,7 @@ public class Tomography{
         Failure_Candidate = Failure_Candidate.stream().sorted().collect(Collectors.toList());
         Failure_Confirmed = Failure_Confirmed.stream().sorted().collect(Collectors.toList());
 
-        System.out.println("正常");
+        System.out.println("\n正常リンク");
         Normal_Link.forEach(normal -> System.out.print(normal.link_name + " "));
         System.out.println();
 
@@ -124,5 +136,14 @@ public class Tomography{
         System.out.println("故障確定");
         Failure_Confirmed.forEach(fail -> System.out.print(fail.link_name + " "));
         System.out.println();
+
+        System.out.println("不通ルート");
+        ArrayList<Link> tmp;
+        for (ArrayList<Link> route : Failure_Path) {
+            tmp = new ArrayList<>(route);
+            tmp.forEach(f -> System.out.print(f.link_name + " "));
+            System.out.println();
+        }
+
     }
 }
