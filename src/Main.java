@@ -7,6 +7,7 @@ import java.util.*;
 public class Main {
     public static ArrayList<Link> Links = new ArrayList<>();//リンク情報のリスト
     public static ArrayList<ArrayList<Link>> Init_Path;//初期観測パス
+    public static ArrayList<ArrayList<Link>> Add_Path = new ArrayList<>(); //追加観測パス
     public static List<Link> Normal_Link; //正常リンク
     public static List<Link> Failure_Candidate;//故障リンク候補集合
     public static List<Link> Failure_Confirmed;//故障リンク確定集合
@@ -57,36 +58,45 @@ public class Main {
         }
         System.out.println();
 
+        //仮のループ
+//        while (true) {
+//            for (Link l : Links)
+//                    l.link_state_flag = true;
 
-        //故障リンク入力
-        System.out.println("\nリンクのラベルを\",\" 区切りで入力し、故障させるリンクを選んでください");
-        System.out.println("-- リンクリスト");
-        for (Link l : Links)
-            System.out.print(l.link_name + " ");
-        System.out.println();
+            //故障リンク入力
+            System.out.println("\nリンクのラベルを\",\" 区切りで入力し、故障させるリンクを選んでください");
+            System.out.println("-- リンクリスト");
+            for (Link l : Links)
+                System.out.print(l.link_name + " ");
+            System.out.println();
 
-        line = new Scanner(System.in).nextLine();
-        Scanner scan = new Scanner(line).useDelimiter("\\s*,\\s*");//カンマ区切りに設定
-        while (true){
-            try{
-                line = scan.next();
-                for (Link l : Links)
-                    if (l.link_name.equals(line))
-                        l.link_state_flag = false;
-            }catch (NoSuchElementException e){//next() 次に読むのがないと投げる
-                break;
+            line = new Scanner(System.in).nextLine();
+            Scanner scan = new Scanner(line).useDelimiter("\\s*,\\s*");//カンマ区切りに設定
+            while (true) {
+                try {
+                    line = scan.next();
+                    for (Link l : Links)
+                        if (l.link_name.equals(line))
+                            l.link_state_flag = false;
+                } catch (NoSuchElementException e) {//next() 次に読むのがないと投げる
+                    break;
+                }
             }
-        }
-        //故障リンクの入力が正しいか確認用
-        System.out.println("\n--リンクの状態確認--");
-        Links.forEach(l -> System.out.println(l.link_name + " " + l.start_node + " " + l.end_node + " " + l.link_state_flag));
-        System.out.println();
+            //故障リンクの入力が正しいか確認用
+            System.out.println("\n--リンクの状態確認--");
+            Links.forEach(l -> System.out.println(l.link_name + " " + l.start_node + " " + l.end_node + " " + l.link_state_flag));
+            System.out.println();
 
-        //イスンタンス化
-        new InitPath(Links);
+            //イスンタンス化
+            new InitPath(Links);
+            new Tomography(Init_Path);
+//        }
+        new AddPath(Normal_Link, Failure_Candidate, Failure_Path);
         new Tomography(Init_Path);
-//        new AdditionalPath(Normal_Link, Failure_Candidate, Failure_Path);
-
+        new AddPath(Normal_Link, Failure_Candidate, Failure_Path);
+        new Tomography(Init_Path);
+        new AddPath(Normal_Link, Failure_Candidate, Failure_Path);
+        new Tomography(Init_Path);
 
         //確認用
 //        for (int j=0; j<Initial_Path.size(); j++) {

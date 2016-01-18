@@ -6,6 +6,7 @@ public class Link implements Comparable<Link>{//リンククラス
     public String end_node ;//そのリンクの終点ノード
     public Boolean link_state_flag ; //リンクの状態フラグ
     public int NomOfBranch = 0;//この先の未選択分岐数
+    public boolean usedFlag;
 
     Link(int i, String l){//コンストラクタ
         this.link_ID = i;
@@ -14,6 +15,7 @@ public class Link implements Comparable<Link>{//リンククラス
         this.start_node = Link[1];//始点ノードを保存
         this.end_node = Link[2];//終点ノードを保存
         this.link_state_flag = true;
+        this.usedFlag = false;
     }
 
     Link(Link l){//コンストラクタ
@@ -23,6 +25,7 @@ public class Link implements Comparable<Link>{//リンククラス
         this.end_node = l.end_node;
         this.link_state_flag = l.link_state_flag;
         this.NomOfBranch = l.NomOfBranch;
+        this.usedFlag = false;
     }
 
     @Override
