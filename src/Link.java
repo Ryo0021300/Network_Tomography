@@ -16,7 +16,7 @@ public class Link implements Comparable<Link>{//リンククラス
         this.link_state_flag = true;
     }
 
-    Link(Link l){
+    Link(Link l){//コンストラクタ
         this.link_ID = l.link_ID;
         this.link_name = l.link_name;
         this.start_node = l.start_node;

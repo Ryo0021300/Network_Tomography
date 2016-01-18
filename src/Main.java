@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Main {
     public static ArrayList<Link> Links = new ArrayList<>();//リンク情報のリスト
-    public static ArrayList<ArrayList<Link>> Initial_Path;//初期観測パス
+    public static ArrayList<ArrayList<Link>> Init_Path;//初期観測パス
     public static List<Link> Normal_Link; //正常リンク
     public static List<Link> Failure_Candidate;//故障リンク候補集合
     public static List<Link> Failure_Confirmed;//故障リンク確定集合
@@ -83,9 +83,9 @@ public class Main {
         System.out.println();
 
         //イスンタンス化
-        new InitialPath(Links);
-        new Tomography(Initial_Path);
-        //new AdditionalPath(Normal_Link, Failure_Candidate, Failure_Confirmed);
+        new InitPath(Links);
+        new Tomography(Init_Path);
+//        new AdditionalPath(Normal_Link, Failure_Candidate, Failure_Path);
 
 
         //確認用

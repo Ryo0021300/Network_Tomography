@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 
-public class InitialPath {
+public class InitPath {
     ArrayList<Link> Links ;//リンクリスト
-    ArrayList<ArrayList<Link>> Initial_Path; //各初期観測パスを格納
+    ArrayList<ArrayList<Link>> Init_Path; //各初期観測パスを格納
 
-    InitialPath(ArrayList<Link> L){//コンストラクタ
+    InitPath(ArrayList<Link> L){//コンストラクタ
         this.Links = new ArrayList<>(L);
-        Initial_Path = new ArrayList<>();
+        Init_Path = new ArrayList<>();
         Initial_Path();
-        Main.Initial_Path = new ArrayList<>(this.Initial_Path);
+        Main.Init_Path = new ArrayList<>(this.Init_Path);
     }
 
     void Initial_Path(){//初期観測パスを選定する関数
@@ -95,11 +95,11 @@ public class InitialPath {
                     }
                 }
 
-                Initial_Path.add(new ArrayList<>(Tmp_Root));//作成したパスを初期観測パス集合に追加
+                Init_Path.add(new ArrayList<>(Tmp_Root));//作成したパスを初期観測パス集合に追加
 //改良
                 if (! Not_Selected.isEmpty()) {
-                    for (int i = 0; i < Initial_Path.size(); i++) {//分岐があれば回し、なければ抜ける
-                        Tmp_Decision = new ArrayList<>(Initial_Path.get(i));
+                    for (int i = 0; i < Init_Path.size(); i++) {//分岐があれば回し、なければ抜ける
+                        Tmp_Decision = new ArrayList<>(Init_Path.get(i));
                         for (int j = 0; j < Tmp_Decision.size(); j++) {
                             for (int k=0; k<Links.size(); k++) {
 //                                    System.out.println("Tmp_Dec link_ID j=" +j+" "+ Tmp_Decision.get(j).link_ID + " Links link_ID k=" +k+" "+ Links.get(k).link_ID);
@@ -111,7 +111,7 @@ public class InitialPath {
                                     flag = true;
                                     k = Links.size();
                                     j = Tmp_Decision.size();
-                                    i = Initial_Path.size();
+                                    i = Init_Path.size();
                                 } else flag = false;
                             }
                         }
