@@ -109,8 +109,16 @@ public class Tomography{
                 }
             }
 
-            if (tmp.size() == 1) //故障リンクがルート中に1個なら故障が確定するので
-                Failure_Confirmed.add(new Link(tmp.get(0))); //確定集合にリンクを追加
+            if (tmp.size() == 1) { //故障リンクがルート中に1個なら故障が確定するので
+                boolean already = false;
+
+                for (Link l : Failure_Confirmed)
+                    if (l.link_ID == tmp.get(0).link_ID)
+                        already = true;
+
+                if (!already)
+                    Failure_Confirmed.add(new Link(tmp.get(0))); //確定集合にリンクを追加
+            }
         }
 
         for (Link l : Failure_Confirmed) //故障が確定したリンクを候補集合から消す
